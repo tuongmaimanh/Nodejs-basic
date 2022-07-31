@@ -1,10 +1,11 @@
 const express = require('express')
 const path = require('path')
 const router = express.Router()
+const rootDir = require('../util/path')
 
-router.use('/add-products',(req,res,next) => {
+router.use('/add-product',(req,res,next) => {
     console.log('another middleware')
-    res.sendFile(path.join(__dirname,'../','views','shop.html'))
+    res.sendFile(path.join(rootDir,'views','add-product.html'))
     // next()
 })
 router.post('/product',(req,res,next)=>{
