@@ -1,9 +1,9 @@
-<%- include('includes/head')  %> 
+<%- include('../includes/head')  %> 
     <link rel="stylesheet" href="/css/product.css">
 </head>
 
 <body>
-    <%- include('includes/navigation')  %> 
+    <%- include('../includes/navigation')  %> 
 
     <main>
         <% if(products.length > 0) { %> 
@@ -21,7 +21,10 @@
                         <p class="product__description">A very interesting book about so many even more interesting things!</p>
                     </div>
                     <div class="card__actions">
-                        <button class="btn">Add to Cart</button>
+                        <a href="/admin/edit-product" class="btn">Edit</a>
+                        <form action="/admin/delete-product" method="POST">
+                            <button class="btn">Delete</button>
+                        </form>
                     </div>
                 </article>
             <% } %> 
@@ -30,4 +33,4 @@
             <h1>No Product Found!</h1>
         <% } %> 
     </main>
-<%- include('includes/end') %> 
+<%- include('../includes/end') %> 
