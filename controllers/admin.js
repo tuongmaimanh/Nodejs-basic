@@ -4,7 +4,7 @@ exports.getAddProduct = (req, res, next) => {
   res.render("admin/edit-product", {
     pageTitle: "Add Product",
     path: "/admin/add-product",
-    editing:false
+    editing: false,
   });
   // next()
 };
@@ -15,9 +15,11 @@ exports.postProduct = (req, res, next) => {
   const price = req.body.price;
   const description = req.body.description;
 
-  const products = new Product(null,title, imageUrl, description, price);
-  products.save();
-  res.redirect("/");
+  const products = new Product(null, title, imageUrl, description, price);
+  products
+    .save()
+    .then(res.redirect("/"))
+    .catch((err) => console.log(err));
 };
 
 exports.getProducts = (req, res, next) => {
@@ -39,31 +41,31 @@ exports.getEditProduct = (req, res, next) => {
   if (!editMode) {
     return res.redirect("/");
   }
-  const productId =req.params.productId
-  Product.findById(productId,product =>{
-      res.render("admin/edit-product", {
-        path: "/admin/edit-product",
-        pageTitle: "Edit Product",
-        editing: editMode,
-        product: product
-      });
-  })
+  const productId = req.params.productId;
+  Product.findById(productId, (product) => {
+    res.render("admin/edit-product", {
+      path: "/admin/edit-product",
+      pageTitle: "Edit Product",
+      editing: editMode,
+      product: product,
+    });
+  });
 };
 
-exports.postEditProduct = (req,res,next) =>{
-  const id = req.body.productId
-    const title = req.body.title;
+exports.postEditProduct = (req, res, next) => {
+  const id = req.body.productId;
+  const title = req.body.title;
   const imageUrl = req.body.imageUrl;
   const price = req.body.price;
   const description = req.body.description;
 
-  const products = new Product(id,title, imageUrl, description, price);
+  const products = new Product(id, title, imageUrl, description, price);
   products.save();
   res.redirect("/");
-}
+};
 
 exports.postDeleteProduct = (req, res, next) => {
-    const id = req.body.productId
-    Product.deleteById(id)
-    res.redirect('/admin/products')
-}
+  const id = req.body.productId;
+  Product.deleteById(id);
+  res.redirect("/admin/products");
+};
