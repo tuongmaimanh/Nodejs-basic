@@ -1,3 +1,4 @@
+const mongodb = require("mongodb");
 const Product = require("../models/product");
 
 exports.getAddProduct = (req, res, next) => {
@@ -14,21 +15,22 @@ exports.postProduct = (req, res, next) => {
   const imageUrl = req.body.imageUrl;
   const price = req.body.price;
   const description = req.body.description;
+  const userId = req.user._id
 
   //add new Product with sequelize assoc auto add create user in products table
-  req.user.createProduct({
-    title: title,
-    price: price,
-    imageUrl: imageUrl,
-    description: description,
-  })
-    .then()
+  const product = new Product(title, price, description, imageUrl,null,userId);
+  product
+    .save()
+    .then((result) => {
+      console.log("Add Product");
+      // res.redirect('/admin/products')
+    })
     .catch((err) => console.log(err));
   res.redirect("/");
 };
 
 exports.getProducts = (req, res, next) => {
-  req.user.getProducts()
+  Product.fetchAll()
     .then((products) => {
       res.render("admin/products", {
         products: products,
@@ -49,7 +51,7 @@ exports.getEditProduct = (req, res, next) => {
     return res.redirect("/");
   }
   const productId = req.params.productId;
-  Product.findByPk(productId)
+  Product.findById(productId)
     .then((product) => {
       res.render("admin/edit-product", {
         path: "/admin/edit-product",
@@ -68,21 +70,25 @@ exports.postEditProduct = (req, res, next) => {
   const price = req.body.price;
   const description = req.body.description;
 
-  Product.update(
-    {
-      title: title,
-      price: price,
-      imageUrl: imageUrl,
-      description: description,
-    },
-    { where: { id: id } }
-  )
+  const product = new Product(
+    title,
+    price,
+    description,
+    imageUrl,
+    mongodb.ObjectId(id)
+  );
+  console.log(id.length);
+  product
+    .save()
     .then(res.redirect("/admin/products"))
     .catch((err) => console.log(err));
 };
 
 exports.postDeleteProduct = (req, res, next) => {
   const id = req.body.productId;
-  Product.destroy({where:{id:id}});
-  res.redirect("/admin/products");
+    Product.deleteById(id)
+    .then(() => {
+      res.redirect("/admin/products");
+    })
+    .catch((err) => console.log(err));
 };

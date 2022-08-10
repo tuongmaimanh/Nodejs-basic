@@ -20,8 +20,9 @@
                         <h2 class="product__price"><%= product.price  %> </h2>
                         <p class="product__description"><%= product.description  %> </p>
                     </div>
+                    <%= product._id  %> 
                     <div class="card__actions">
-                            <a class="btn"  href="/products/<%= product.id  %>">Detail</a>
+                            <a class="btn"  href="/products/<%= product._id  %>">Detail</a>
                         <%- include('../includes/add-to-cart',{product:product}) %> 
                     </div>
                 </article>
