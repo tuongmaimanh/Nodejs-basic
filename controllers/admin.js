@@ -15,10 +15,14 @@ exports.postProduct = (req, res, next) => {
   const imageUrl = req.body.imageUrl;
   const price = req.body.price;
   const description = req.body.description;
-  const userId = req.user._id
 
-  //add new Product with sequelize assoc auto add create user in products table
-  const product = new Product(title, price, description, imageUrl,null,userId);
+  const product = new Product({
+    title: title,
+    price: price,
+    description: description,
+    imageUrl: imageUrl,
+    userId: req.user._id
+  });
   product
     .save()
     .then((result) => {
@@ -30,7 +34,7 @@ exports.postProduct = (req, res, next) => {
 };
 
 exports.getProducts = (req, res, next) => {
-  Product.fetchAll()
+  Product.find()
     .then((products) => {
       res.render("admin/products", {
         products: products,
@@ -70,25 +74,23 @@ exports.postEditProduct = (req, res, next) => {
   const price = req.body.price;
   const description = req.body.description;
 
-  const product = new Product(
-    title,
-    price,
-    description,
-    imageUrl,
-    mongodb.ObjectId(id)
-  );
-  console.log(id.length);
-  product
-    .save()
+  Product.updateOne(
+    { _id: id },
+    {
+      title: title,
+      price: price,
+      description: description,
+      imageUrl: imageUrl,
+    }
+  )
     .then(res.redirect("/admin/products"))
     .catch((err) => console.log(err));
 };
 
 exports.postDeleteProduct = (req, res, next) => {
   const prodId = req.body.productId;
-  const userId = req.user._id.toString()
-  console.log(userId)
-    Product.deleteById(prodId,userId)
+
+  Product.deleteOne({ _id: prodId })
     .then(() => {
       res.redirect("/admin/products");
     })
