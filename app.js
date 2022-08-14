@@ -47,6 +47,7 @@ mongoose
         user.save();
       }
     });
-    app.listen(8000);
+    const PORT = process.env.PORT || 8000
+    app.listen(PORT);
   })
   .catch((err) => console.log(err));
